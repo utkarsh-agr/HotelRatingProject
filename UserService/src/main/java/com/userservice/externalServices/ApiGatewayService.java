@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @FeignClient("API-GATEWAY")
 public interface ApiGatewayService {
 
     @GetMapping("/ratings/user/{userId}")
-    ResponseEntity<List<Rating>> getRatingsOfUser(@PathVariable("userId") String userId);
+    List<Rating> getRatingsOfUser(@PathVariable("userId") String userId);
 
     @GetMapping("/hotels/{hotelId}")
     Hotel getHotel(@PathVariable("hotelId") String hotelId);

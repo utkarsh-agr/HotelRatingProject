@@ -29,9 +29,9 @@ spring:
 #    service-url:
 #      defaultZone: http://localhost:8761/eureka
 management:
-  health:
-    circuitbreakers:
-      enabled: true
+#  health:
+#    circuitbreakers:
+#      enabled: true
   endpoint:
     health:
       show-details: always
@@ -40,30 +40,30 @@ management:
       exposure:
         include: health
 
-resilience4j:
-  circuitbreaker:
-    instances:
-      UserCallingHotelRatingServiceBreaker:
-        register-health-indicator: true
-        event-consumer-buffer-size: 10
-        failure-rate-threshold: 50
-        minimum-number-of-calls: 5
-        automatic-transition-from-open-to-half-open-enabled: true
-        wait-duration-in-open-state: 6s
-        permitted-number-of-calls-in-half-open-state: 3
-        sliding-window-size: 10
-        sliding-window-type: COUNT_BASED
-  retry:
-    instances:
-      ratingHotelCallFromUserRetry:
-        fail-after-max-attempts: true
-        max-attempts: 3
-        wait-duration: 3s
-
-  ratelimiter:
-    instances:
-      rateLimiterToGetUser:
-        limit-refresh-period: 4s
-        limit-for-period: 10
-        timeout-duration: 0s
+#resilience4j:
+#  circuitbreaker:
+#    instances:
+#      UserCallingHotelRatingServiceBreaker:
+#        register-health-indicator: true
+#        event-consumer-buffer-size: 10
+#        failure-rate-threshold: 50
+#        minimum-number-of-calls: 5
+#        automatic-transition-from-open-to-half-open-enabled: true
+#        wait-duration-in-open-state: 6s
+#        permitted-number-of-calls-in-half-open-state: 3
+#        sliding-window-size: 10
+#        sliding-window-type: COUNT_BASED
+#  retry:
+#    instances:
+#      ratingHotelCallFromUserRetry:
+#        fail-after-max-attempts: true
+#        max-attempts: 3
+#        wait-duration: 3s
+#
+#  ratelimiter:
+#    instances:
+#      rateLimiterToGetUser:
+#        limit-refresh-period: 4s
+#        limit-for-period: 10
+#        timeout-duration: 0s
 

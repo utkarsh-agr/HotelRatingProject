@@ -16,7 +16,7 @@ public class RatingServicesImpl implements RatingServices {
     RatingRepository ratingRepository;
 
     @Override
-    public Rating addRating(Rating rating) {
+    public Rating addRating(Rating rating){
         rating.setRatingId(UUID.randomUUID().toString());
         return ratingRepository.save(rating);
     }

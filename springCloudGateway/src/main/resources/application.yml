@@ -2,30 +2,59 @@ server:
   port: 8086
 
 spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
   application:
     name: API-GATEWAY
   cloud:
     gateway:
-      mvc:
-        routes:
-          - id: USER-SERVICE
-            uri: lb://USER-SERVICE
-            predicates:
-              - Path=/users/**
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: myUserCircuitBreaker
+                fallbackUri: forward:/inCaseOfUserServiceDown
 
-          - id: HOTEL-SERVICE
-            uri: lb://HOTEL-SERVICE
-            predicates:
-              - Path=/hotels/**,/hotelservicecreator/**
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter:
+                  replenishRate: 10
+                  burstCapacity: 15
+                  requestedTokens: 1
 
-          - id: RATING-SERVICE
-            uri: lb://RATING-SERVICE
-            predicates:
-              - Path=/ratings/**
+        - id: HOTEL-SERVICE
+          uri: lb://HOTEL-SERVICE
+          predicates:
+            - Path=/hotels/**,/hotelservicecreator/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: myHotelCircuitBreaker
+                fallbackUri: forward:/inCaseOfHotelServiceDown
+
+        - id: RATING-SERVICE
+          uri: lb://RATING-SERVICE
+          predicates:
+            - Path=/ratings/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: myRatingCircuitBreaker
+                fallbackUri: forward:/inCaseOfRatingServiceDown
+
+
   config:
     import: configserver:http://localhost:8087
   profiles:
     active: dev
+
+
 
 #eureka:
 #  instance:
@@ -35,3 +64,53 @@ spring:
 #    register-with-eureka: true
 #    service-url:
 #      defaultZone: http://localhost:8761/eureka
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      myUserCircuitBreaker:
+        register-health-indicator: true
+        event-consumer-buffer-size: 9
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 6s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 100
+        sliding-window-type: COUNT_BASED
+
+      myHotelCircuitBreaker:
+        register-health-indicator: true
+        event-consumer-buffer-size: 9
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 6s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 100
+        sliding-window-type: COUNT_BASED
+
+      myRatingCircuitBreaker:
+        register-health-indicator: true
+        event-consumer-buffer-size: 9
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 6s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 100
+        sliding-window-type: COUNT_BASED
+

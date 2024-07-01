@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,17 +57,22 @@ public class UserServicesImpl implements UserServices {
 
         List<Rating> ratings=getRatingsAndHotelOfUser(user);
         user.setRatings(ratings);
+
         return user;
     }
 
     private List<Rating> getRatingsAndHotelOfUser(User user) {
-        List<Rating> ratings= apiGatewayService.getRatingsOfUser(user.getId()).getBody();
-        assert ratings !=null;
-        return ratings.stream().map(rating -> {
-            Hotel hotel=apiGatewayService.getHotel(rating.getHotelId());
-            //Hotel hotel=restTemplate.getForObject("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
-            rating.setHotel(hotel);
-            return rating;
-        }).toList();
+        List<Rating> ratings= apiGatewayService.getRatingsOfUser(user.getId());
+        if(ratings==null) ratings=new ArrayList<>();
+        if(!ratings.isEmpty()){
+            return ratings.stream().map(rating -> {
+                Hotel hotel=apiGatewayService.getHotel(rating.getHotelId());
+                //Hotel hotel=restTemplate.getForObject("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
+                //hotel=null;
+                rating.setHotel(hotel);
+                return rating;
+            }).toList();
+        }
+        return ratings;
     }
 }
