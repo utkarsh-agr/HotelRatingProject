@@ -8,6 +8,6 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/utkarsh-agr/config-server_HotelRating
+          uri: ${config_url}
           clone-on-start: true
 

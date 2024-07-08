@@ -84,7 +84,7 @@ resilience4j:
       myUserCircuitBreaker:
         register-health-indicator: true
         event-consumer-buffer-size: 9
-        failure-rate-threshold: 50
+        failure-rate-threshold: 40
         minimum-number-of-calls: 5
         automatic-transition-from-open-to-half-open-enabled: true
         wait-duration-in-open-state: 6s

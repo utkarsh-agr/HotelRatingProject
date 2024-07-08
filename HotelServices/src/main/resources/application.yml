@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: Little2001#
-    url: jdbc:mysql://localhost:3306/microhotel
+    username: ${db_username}
+    password: ${db_password}
+    url: ${db_url}
   jpa:
     hibernate:
       ddl-auto: update
