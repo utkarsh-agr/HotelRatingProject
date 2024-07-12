@@ -3,20 +3,22 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${db_username}
-    password: ${db_password}
-    url: ${db_url}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    url: jdbc:mysql://${DB_HOST}/${HOTEL_DB}?useSSL=false
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
   application:
     name: hotel-service
+#  config:
+#    import: configserver:http://localhost:8087
   config:
-    import: configserver:http://localhost:8087
+    import: configserver:http://cloud-config-server-svc.default.svc.cluster.local:80
   profiles:
     active: dev
-
 
 #eureka:
 #  instance:

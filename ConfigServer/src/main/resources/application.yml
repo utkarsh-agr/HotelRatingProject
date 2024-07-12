@@ -8,6 +8,16 @@ spring:
     config:
       server:
         git:
-          uri: ${config_url}
+          uri: https://github.com/utkarsh-agr/config-server_HotelRating
           clone-on-start: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    hostname: eureka-0
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-0.eureka.default.svc.cluster.local:8761/eureka
 

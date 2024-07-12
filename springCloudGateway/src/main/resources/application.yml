@@ -48,9 +48,10 @@ spring:
                 name: myRatingCircuitBreaker
                 fallbackUri: forward:/inCaseOfRatingServiceDown
 
-
+#  config:
+#    import: configserver:http://localhost:8087
   config:
-    import: configserver:http://localhost:8087
+    import: configserver:http://cloud-config-server-svc.default.svc.cluster.local:80
   profiles:
     active: dev
 
